@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160" role="img" aria-labelledby="title">
+  <title id="title">Meraki NetOps assistant logo: a chat bubble holding a small network of connected nodes</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f2a44"/>
+      <stop offset="1" stop-color="#123b5e"/>
+    </linearGradient>
+    <linearGradient id="bubble" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="36" fill="url(#bg)"/>
+  <!-- chat bubble -->
+  <path d="M38 40h84a14 14 0 0 1 14 14v46a14 14 0 0 1-14 14H74l-22 18v-18H38a14 14 0 0 1-14-14V54a14 14 0 0 1 14-14z"
+        fill="url(#bubble)"/>
+  <!-- network links -->
+  <g stroke="#0f2a44" stroke-width="5" stroke-linecap="round">
+    <line x1="80" y1="60" x2="54" y2="92"/>
+    <line x1="80" y1="60" x2="106" y2="92"/>
+    <line x1="54" y1="92" x2="106" y2="92"/>
+  </g>
+  <!-- nodes -->
+  <g fill="#ffffff" stroke="#0f2a44" stroke-width="4">
+    <circle cx="80" cy="58" r="10"/>
+    <circle cx="54" cy="92" r="9"/>
+    <circle cx="106" cy="92" r="9"/>
+  </g>
+  <!-- status pulse on the core node -->
+  <circle cx="80" cy="58" r="4" fill="#22c55e"/>
+</svg>
