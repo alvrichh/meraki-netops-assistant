@@ -7,8 +7,8 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Cisco_Meraki-Dashboard_API_v1-1BA0D7?logo=cisco&logoColor=white" alt="Cisco Meraki Dashboard API v1">
   <img src="https://img.shields.io/badge/MCP-stdio_server-6E56CF" alt="MCP stdio server">
-  <img src="https://img.shields.io/badge/Claude_Code-ready-D97757?logo=claude&logoColor=white" alt="Claude Code ready">
-  <img src="https://img.shields.io/badge/Codex-ready-111111" alt="Codex ready">
+  <img src="https://img.shields.io/badge/Claude_Code-tested-D97757?logo=claude&logoColor=white" alt="Claude Code tested">
+  <img src="https://img.shields.io/badge/Codex-tested-111111" alt="Codex tested">
   <img src="https://img.shields.io/badge/Gemini_CLI-ready-4285F4?logo=googlegemini&logoColor=white" alt="Gemini CLI ready">
   <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white" alt="Python 3.9+">
   <img src="https://img.shields.io/badge/dependencies-none-2EA44F" alt="No dependencies">
@@ -53,7 +53,7 @@ Then start the agent you use, from the repository root:
 | [OpenAI Codex](https://developers.openai.com/codex) | `codex` | `.codex/config.toml` (trust the project once) | `AGENTS.md` |
 | [Gemini CLI](https://geminicli.com) / Antigravity CLI | `gemini` | `.gemini/settings.json` | `AGENTS.md` (set in `.gemini/settings.json`) |
 
-All three start the same server and follow the same `AGENTS.md`, so the answers are consistent whichever AI you use. The Claude Code setup is tested end to end; the Codex and Gemini configs follow each tool's documented format and are checked by `tests/test_agent_configs.py`. Gemini CLI was succeeded by Antigravity CLI in June 2026; if your version does not pick up `.gemini/settings.json`, add the server from that file to its own config.
+All three start the same server and follow the same `AGENTS.md`, so the answers are consistent whichever AI you use. Claude Code and Codex are tested end to end: both start the server, call the tools and diagnose the four offices. The Gemini config follows its documented format and is checked by `tests/test_agent_configs.py`. Gemini CLI was succeeded by Antigravity CLI in June 2026; if your version does not pick up `.gemini/settings.json`, add the server from that file to its own config.
 
 Try:
 
