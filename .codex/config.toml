@@ -1,0 +1,6 @@
+# Project-scoped Codex configuration (loaded only when this project is trusted in Codex).
+# Mirrors .mcp.json used by Claude Code. Start Codex from the repository root.
+
+[mcp_servers.meraki-demo]
+command = "python3"
+args = ["netops/server.py"]
