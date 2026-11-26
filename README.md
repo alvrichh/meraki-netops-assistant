@@ -9,13 +9,13 @@
   <img src="https://img.shields.io/badge/MCP-stdio_server-6E56CF" alt="MCP stdio server">
   <img src="https://img.shields.io/badge/Claude_Code-tested-D97757?logo=claude&logoColor=white" alt="Claude Code tested">
   <img src="https://img.shields.io/badge/Codex-tested-111111" alt="Codex tested">
-  <img src="https://img.shields.io/badge/Gemini_CLI-ready-4285F4?logo=googlegemini&logoColor=white" alt="Gemini CLI ready">
+  <img src="https://img.shields.io/badge/Gemini_%2F_Antigravity-configured-4285F4?logo=googlegemini&logoColor=white" alt="Gemini CLI and Antigravity CLI configured">
   <img src="https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white" alt="Python 3.9+">
   <img src="https://img.shields.io/badge/dependencies-none-2EA44F" alt="No dependencies">
   <img src="https://img.shields.io/badge/license-MIT-lightgrey" alt="MIT license">
 </p>
 
-Ask your AI coding agent (Claude Code, Codex or Gemini CLI) about your office networks in plain English and get the cause, the evidence and the next action, ready to paste into a ticket.
+Ask your AI coding agent (Claude Code, Codex, Gemini CLI or Antigravity CLI) about your office networks in plain English and get the likely cause, the evidence behind it and the next action, ready to paste into a ticket.
 
 *Independent project, not affiliated with or endorsed by Cisco.*
 
@@ -25,7 +25,7 @@ Ask your AI coding agent (Claude Code, Codex or Gemini CLI) about your office ne
 
 The repository connects an AI agent to Cisco Meraki network data through a small [MCP](https://modelcontextprotocol.io) server. It needs **no API keys and no dependencies**: the AI is the agent session you open in the repo, and the server is pure Python standard library.
 
-> **Demo data.** The network is a simulated company, Northwind Labs, with four offices. The data in `data/demo-org.json` follows the field names of the [Meraki Dashboard API v1](https://developer.cisco.com/meraki/api-v1/), so the tools can later be pointed at a real organisation.
+> **Demo data.** The network is a simulated company, Northwind Labs, with four offices. The data in `data/demo-org.json` uses the field names of the [Meraki Dashboard API v1](https://developer.cisco.com/meraki/api-v1/) (checked against v1.76.0), with simplified responses: no pagination envelopes and a few inventory fields such as ISP circuits. Pointing the tools at a real organisation would need a small adapter in front of `netops/data.py`; the MCP tools would stay the same.
 
 ## What it finds in the demo
 
@@ -33,7 +33,7 @@ The repository connects an AI agent to Cisco Meraki network data through a small
 |---|---|---|
 | Dublin HQ | One access point offline; the AP next to it at 86% channel use on 5 GHz | Check PoE and cabling on the offline AP's switch port; spread clients, review channels |
 | London | Main internet line (wan1) down, office running on 4G backup | Raise a fault with the ISP, quoting the circuit id and failure time |
-| Barcelona | Guest VLAN ran out of DHCP leases (a /26: 62 addresses) | Enlarge the subnet or shorten the lease time |
+| Barcelona | Guest VLAN ran out of DHCP leases 3 times in 24 hours (a /26: 62 host addresses) | Check lease use, then enlarge the subnet or shorten the lease time |
 | San Francisco | Healthy | Nothing to do |
 
 ## Run it
@@ -51,9 +51,10 @@ Then start the agent you use, from the repository root:
 |---|---|---|---|
 | [Claude Code](https://code.claude.com) | `claude` | `.mcp.json` (approve `meraki-demo` once) | `CLAUDE.md` → `AGENTS.md` |
 | [OpenAI Codex](https://developers.openai.com/codex) | `codex` | `.codex/config.toml` (trust the project once) | `AGENTS.md` |
-| [Gemini CLI](https://geminicli.com) / Antigravity CLI | `gemini` | `.gemini/settings.json` | `AGENTS.md` (set in `.gemini/settings.json`) |
+| [Gemini CLI](https://geminicli.com) | `gemini` | `.gemini/settings.json` | `AGENTS.md` (set in `.gemini/settings.json`) |
+| [Antigravity CLI](https://antigravity.google/docs/cli/gcli-migration/) | `agy` | `.agents/mcp_config.json` | `AGENTS.md` |
 
-All three start the same server and follow the same `AGENTS.md`, so the answers are consistent whichever AI you use. Claude Code and Codex are tested end to end: both start the server, call the tools and diagnose the four offices. The Gemini config follows its documented format and is checked by `tests/test_agent_configs.py`. Gemini CLI was succeeded by Antigravity CLI in June 2026; if your version does not pick up `.gemini/settings.json`, add the server from that file to its own config.
+All four start the same server with the same command, follow the same `AGENTS.md` and share the triage skill in `.agents/skills`, so the answers are consistent whichever AI you use. **Claude Code and Codex are tested end to end**: both start the server, call the tools and diagnose the four offices. The Gemini CLI and Antigravity CLI configs follow each tool's documentation and are checked statically by `tests/test_agent_configs.py`, but have not been run against a live session. Google is moving Gemini CLI users to Antigravity CLI; see its [migration guide](https://antigravity.google/docs/cli/gcli-migration/).
 
 Try:
 
@@ -91,7 +92,7 @@ Gemini CLI ──┘
 | `get_vlans` | `GET /networks/{networkId}/appliance/vlans` |
 | `network_health_summary` | Combines the above and ranks findings by severity |
 
-The tools only read data. Fixes are returned as recommendations for a person to apply in the Meraki dashboard.
+The tools only read data. Findings describe what the data shows, a symptom or a likely cause, not a confirmed root cause; fixes are returned as recommendations for a person to apply in the Meraki dashboard.
 
 ## Tests
 
@@ -99,7 +100,9 @@ The tools only read data. Fixes are returned as recommendations for a person to 
 python3 -m unittest discover -s tests -t . -v
 ```
 
-The tests cover the queries, the health rules, a full MCP session over stdio (initialize, tools/list, tools/call and error cases) and the three agent configs.
+The tests cover the queries and health rules (including WAN with no active uplink or no data, HA spares and DHCP per VLAN within 24 hours), MCP sessions over stdio (version negotiation, calls before `initialize`, argument validation, malformed messages that must not end the session) and static checks that the four agent configs start the same server.
+
+The code was reviewed by OpenAI Codex as an independent code review; its findings (request validation, protocol version negotiation, false "healthy" WAN results, DHCP grouping, timestamps on RF samples, exact name matching and the Antigravity setup) are fixed and covered by tests.
 
 ## Roadmap
 
